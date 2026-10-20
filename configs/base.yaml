@@ -1,0 +1,152 @@
+# configs/base.yaml — the frozen experimental setup (roadmap step 2).
+#
+# Every agent — P0 baseline, Handcrafted control or VKG variant — is built from
+# this file through grid2op_vkg.config.make_env(). Anything that changes the
+# MDP lives here so that cross-method comparisons stay valid (design PDF §7).
+# Changing a value under `env:` or `chronics:` invalidates results/ produced
+# under the previous value; bump `version` and say so in the commit message.
+#
+# History: v1 (2026-09-19) MAX_SIMULATE_PER_STEP 30 → v2 40 (nothing else
+# changed; learned agents never call simulate, so v1 training runs stay valid).
+#          v3 (2026-09-19) heuristics.reward_cumul added = sum. Training-protocol
+#          change only: env/chronics untouched, so rule-agent results from v2 stand;
+#          every learned-agent run trained before v3 is invalid (see results/README).
+#          v4 (2026-09-21) training.vec_normalize_reward added = true. Training-protocol
+#          only. With reward_cumul=sum returns span two orders of magnitude and the PPO
+#          critic's explained_variance sits at ~0 (constant baseline); normalising the
+#          training return fixes it (feat/vkg probe: 64.6 % -> 88.0 %, same seed/budget).
+version: 4
+
+env:
+  name: l2rpn_case14_sandbox
+  backend: lightsim2grid
+  # PlayableAction = topology + line status + redispatch + curtailment (+ storage
+  # where present). The dataset's own action class forbids curtailment, which
+  # OptimCVXPY cannot work with; every agent gets this same space.
+  action_class: PlayableAction
+  # The sandbox's declared reward (economic: redispatch cost + blackout
+  # penalty). Kept because it is competition-aligned and already encodes the
+  # PDF's "survive first, then be cheap" ordering. L2RPNReward is logged next
+  # to it (info["rewards"]["l2rpn"]) but never optimised.
+  reward_class: RedispReward
+  other_rewards:
+    l2rpn: L2RPNReward
+  parameters:
+    # --- deliberately changed from the sandbox defaults -------------------
+    NB_TIMESTEP_COOLDOWN_SUB: 3        # sandbox default 0 → topology would be free
+    NB_TIMESTEP_COOLDOWN_LINE: 3       # sandbox default 0
+    MAX_SIMULATE_PER_STEP: 40          # sandbox default -1 (unlimited). ExpertAgent's
+                                       # worst case is 31/step (25 candidates + checks);
+                                       # 30 made it crash on 7/20 episodes. Exceeding
+                                       # the cap voids that step's action (harness rule).
+    MAX_SIMULATE_PER_EPISODE: -1       # per-step cap is the binding budget
+    # --- sandbox defaults, pinned so nobody relies on the env's config.py --
+    NB_TIMESTEP_OVERFLOW_ALLOWED: 2
+    HARD_OVERFLOW_THRESHOLD: 2.0
+    MAX_SUB_CHANGED: 1
+    MAX_LINE_STATUS_CHANGED: 1
+    NO_OVERFLOW_DISCONNECTION: false
+  # Round-1 ablations run without an adversary: the reconnect rule is then
+  # indistinguishable from DoNothing (measured), which is acceptable because
+  # the question in round 1 is the VKG mechanism, not robustness. The `strong`
+  # profile below is for the later robustness round; it is NOT used until
+  # `env.opponent` says so.
+  opponent: none
+
+opponent_profiles:
+  none: {}
+  strong:                              # modelled on l2rpn_neurips_2020_track1
+    opponent_class: RandomLineOpponent
+    opponent_action_class: PowerlineSetAction
+    opponent_budget_class: BaseActionBudget
+    opponent_attack_duration: 48       # 4 h
+    opponent_attack_cooldown: 144      # 12 h
+    opponent_budget_per_ts: 0.17
+    opponent_init_budget: 144
+    lines_attacked: null               # TODO: pick when the robustness round starts
+
+chronics:
+  # Deterministic split of the 1004 sandbox chronics. Concrete ids are written
+  # to configs/chronics_split.json by `uv run python -m grid2op_vkg.config`;
+  # that file is committed and is the source of truth for experiments.
+  seed: 0
+  test: 100
+  val: 50
+  # train = the remaining 854
+  eval_default: 20                     # first 20 test ids for routine runs
+  episode_max_steps: 8064              # full episode; never truncate in reported runs
+
+actions:
+  # The Raw learned agents act in this discrete space (179 set_bus actions +
+  # do-nothing on case14). VKG-Mask restricts it and must report the size of
+  # the restricted set and the share of "critical" actions it masks out.
+  discrete_space:
+    attr_to_keep: [set_bus]
+  candidate_set: full                  # 'full' or a path to an actions .npy
+
+observation:
+  # Same list for every learned agent. VKG-State *appends* features; nothing
+  # here is ever removed for a subset of methods (fairness: same information).
+  attr_to_keep:
+    - day_of_week
+    - hour_of_day
+    - minute_of_hour
+    - prod_p
+    - prod_v
+    - load_p
+    - load_q
+    - actual_dispatch
+    - target_dispatch
+    - topo_vect
+    - time_before_cooldown_line
+    - time_before_cooldown_sub
+    - rho
+    - timestep_overflow
+    - line_status
+
+heuristics:
+  # Applied identically to every learned agent (train and inference).
+  wrapper: GymEnvWithRecoWithDN
+  safe_max_rho: 0.9
+  # How the wrapper folds the rewards of the env steps its heuristic plays on
+  # the agent's behalf into the agent's reward. The vendored default ("init" /
+  # "last") keeps ONE step's reward, so an action that keeps the grid alive for
+  # 500 heuristic steps earns the same as one that blacks out 4 steps later —
+  # survival is never rewarded and every learned agent collapses to do-nothing
+  # (observed: Raw PPO 5/5 seeds, 2026-09-19). "sum" credits the whole span.
+  reward_cumul: sum
+
+training:
+  algo: PPO
+  total_agent_steps: 200000            # ~2–4 h/seed on this CPU at 15–27 steps/s
+  seeds: [0, 1, 2, 3, 4]
+  net_arch: [256, 256]
+  learning_rate: 3.0e-4
+  # Extra Stable-Baselines3 PPO constructor arguments, shared by every
+  # variant of the ablation. Tune ONLY on the val split with Raw, then freeze.
+  ppo_kwargs:
+    ent_coef: 0.0
+    n_steps: 2048
+    batch_size: 64
+    gamma: 0.99
+  # Wrap the training env in SB3 VecNormalize(norm_obs=False, norm_reward=True):
+  # only the return seen by the optimiser is rescaled, observations and the
+  # evaluation reward are untouched, so no statistics need to be reloaded at
+  # inference. Shared by every learned arm.
+  vec_normalize_reward: true
+
+evaluation:
+  deterministic: true
+  max_act_seconds: 1.0                 # per-step decision limit; counted, not enforced
+  metrics:
+    - survival
+    - blackout
+    - cum_reward
+    - cum_reward_l2rpn
+    - max_rho
+    - overflow_steps
+    - action_mix
+    - n_illegal
+    - n_simulate
+    - act_ms_p50
+    - act_ms_p95

@@ -1,0 +1,117 @@
+[PrefixDeclaration]
+:		https://grid2op-vkg.org/ontology#
+g2o:		https://grid2op-vkg.org/ontology#
+grid:		https://grid2op-vkg.org/resource/
+rdf:		http://www.w3.org/1999/02/22-rdf-syntax-ns#
+rdfs:		http://www.w3.org/2000/01/rdf-schema#
+xsd:		http://www.w3.org/2001/XMLSchema#
+
+[MappingDeclaration] @collection [[
+mappingId	substation
+target		grid:sub_{id} a g2o:Substation ; rdfs:label {name} ; g2o:elementIndex {id} ; g2o:terminalCount {n_terminals} .
+source		SELECT id, name, n_terminals FROM substation
+
+mappingId	busbar
+target		grid:busbar_{id} a g2o:Busbar ; g2o:busbarNumber {number} . grid:sub_{sub} g2o:hasBusbar grid:busbar_{id} .
+source		SELECT id, sub, number FROM busbar
+
+mappingId	terminal
+target		grid:term_{id} a g2o:Terminal ; rdfs:label {label} ; g2o:topoVectIndex {id} ; g2o:atSubstation grid:sub_{sub} .
+source		SELECT id, label, sub FROM terminal
+
+mappingId	terminal-line-or
+target		grid:term_{id} a g2o:LineOrigin .
+source		SELECT id FROM terminal WHERE kind = 'line_or'
+
+mappingId	terminal-line-ex
+target		grid:term_{id} a g2o:LineExtremity .
+source		SELECT id FROM terminal WHERE kind = 'line_ex'
+
+mappingId	terminal-gen
+target		grid:term_{id} a g2o:GenTerminal .
+source		SELECT id FROM terminal WHERE kind = 'gen'
+
+mappingId	terminal-load
+target		grid:term_{id} a g2o:LoadTerminal .
+source		SELECT id FROM terminal WHERE kind = 'load'
+
+mappingId	terminal-storage
+target		grid:term_{id} a g2o:StorageTerminal .
+source		SELECT id FROM terminal WHERE kind = 'storage'
+
+mappingId	line
+target		grid:line_{id} a g2o:PowerLine ; rdfs:label {name} ; g2o:elementIndex {id} ; g2o:originTerminal grid:term_{term_or} ; g2o:extremityTerminal grid:term_{term_ex} ; g2o:hasTerminal grid:term_{term_or} ; g2o:hasTerminal grid:term_{term_ex} .
+source		SELECT t.id, r.name, t.term_or, t.term_ex FROM line_topology t JOIN line_rating r ON r.id = t.id
+
+mappingId	line-thermal
+target		grid:line_{id} g2o:thermalLimit {thermal_limit} .
+source		SELECT id, thermal_limit FROM line_rating WHERE thermal_limit IS NOT NULL
+
+mappingId	generator
+target		grid:gen_{id} a g2o:Generator ; rdfs:label {name} ; g2o:elementIndex {id} ; g2o:hasTerminal grid:term_{terminal} .
+source		SELECT id, name, terminal FROM generator
+
+mappingId	load
+target		grid:load_{id} a g2o:Load ; rdfs:label {name} ; g2o:elementIndex {id} ; g2o:hasTerminal grid:term_{terminal} .
+source		SELECT id, name, terminal FROM load
+
+mappingId	storage
+target		grid:storage_{id} a g2o:Storage ; rdfs:label {name} ; g2o:elementIndex {id} ; g2o:hasTerminal grid:term_{terminal} .
+source		SELECT id, name, terminal FROM storage
+
+mappingId	action-common
+target		grid:action_{id} a g2o:CandidateAction ; g2o:actionIndex {id} ; rdfs:label {label} ; g2o:actionCost "0.0"^^xsd:double .
+source		SELECT id, label FROM candidate_action
+
+mappingId	action-nothing
+target		grid:action_{id} a g2o:DoNothingAction .
+source		SELECT id FROM candidate_action WHERE kind = 'nothing'
+
+mappingId	action-topology
+target		grid:action_{id} a g2o:TopologyAction ; g2o:actsOn grid:sub_{sub} .
+source		SELECT id, sub FROM candidate_action WHERE kind = 'set_bus'
+
+mappingId	action-line-status
+target		grid:action_{id} a g2o:LineStatusAction ; g2o:actsOn grid:line_{line} ; g2o:setsLineStatus {status} .
+source		SELECT id, line, status FROM candidate_action WHERE kind = 'line_status'
+
+mappingId	action-assignment
+target		grid:assign_{action_id}_{terminal} a g2o:BusAssignment ; g2o:assignsTerminal grid:term_{terminal} ; g2o:assignsBusbar {busbar} . grid:action_{action_id} g2o:assigns grid:assign_{action_id}_{terminal} .
+source		SELECT action_id, terminal, busbar FROM action_assignment
+
+mappingId	line-flow
+target		grid:line_{line} g2o:rho {rho} ; g2o:timestepOverflow {overflow} .
+source		SELECT line, rho, overflow FROM line_flow
+
+mappingId	line-switching
+target		grid:line_{line} g2o:inService {in_service} ; g2o:cooldown {cooldown} .
+source		SELECT line, in_service, cooldown FROM line_switching
+
+mappingId	sub-state
+target		grid:sub_{sub} g2o:cooldown {cooldown} ; g2o:isSplit {is_split} .
+source		SELECT sub, cooldown, is_split FROM sub_state
+
+mappingId	terminal-state
+target		grid:term_{terminal} g2o:connectedTo grid:bus_{bus} ; g2o:onBusbar {busbar} .
+source		SELECT terminal, bus, busbar FROM terminal_state WHERE bus IS NOT NULL
+
+mappingId	gen-state
+target		grid:gen_{gen} g2o:marginUp {margin_up} ; g2o:marginDown {margin_down} ; g2o:actualDispatch {dispatch} .
+source		SELECT gen, margin_up, margin_down, dispatch FROM gen_state
+
+mappingId	bus
+target		grid:bus_{id} a g2o:Bus ; g2o:busAt grid:sub_{sub} .
+source		SELECT id, sub FROM bus
+
+mappingId	line-neighbour
+target		grid:line_{a} g2o:sharesSubstationWith grid:line_{b} .
+source		SELECT a, b FROM line_neighbour
+
+mappingId	line-adjacency
+target		grid:line_{a} g2o:electricallyAdjacent grid:line_{b} .
+source		SELECT a, b FROM line_adjacency
+
+mappingId	remedial-effect
+target		grid:remedial_{action}_{line} a g2o:RemedialEffect ; g2o:ofAction grid:action_{action} ; g2o:onLine grid:line_{line} ; g2o:effect {effect} ; g2o:signStability {frac_pos} .
+source		SELECT action, line, effect, frac_pos FROM remedial_effect
+]]

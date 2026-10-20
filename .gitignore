@@ -1,0 +1,17 @@
+__pycache__/
+*.py[oc]
+.venv*/
+*.egg-info/
+.env*
+*.pem
+*.key
+runs/
+slurm_output/
+tmp/
+cache/
+datasets/
+data_grid2op/
+*.pt
+*.pth
+*.ckpt
+*.tar.gz

@@ -1,0 +1,69 @@
+[project]
+name = "grid2op-vkg"
+version = "0.1.0"
+description = "VKG semantic feedback (state, reward shaping, action masking) for RL on Grid2Op power-grid control"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "cvxpy>=1.9.2",
+    "duckdb>=1.3",
+    "expertop4grid>=0.3.3",
+    "grid2op>=1.12.5",
+    "gymnasium>=1.3.0",
+    "lightsim2grid>=1.0.0",
+    "numba>=0.67.0",
+    "pandas>=2.3.3",
+    "pyyaml>=6.0.3",
+    "rdflib>=7.1",
+    "sb3-contrib>=2.9.0",
+    "stable-baselines3>=2.9.0",
+    # listed explicitly so [tool.uv.sources] can pin it to the CPU index (sources only apply to direct deps)
+    "tensorboard>=2.21.0",
+    "torch>=2.14",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "ruff>=0.14",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.17,<0.13.0"]
+build-backend = "uv_build"
+
+# This box (xiao-cpu) has no GPU: pull the CPU-only torch wheels (~200 MB)
+# instead of the default CUDA build (~3 GB of nvidia-* libraries).
+# On a GPU machine, drop this block and re-lock.
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu" }]
+
+# Pin PyPI as the default index explicitly so that a user-level mirror in
+# ~/.config/uv/uv.toml (e.g. TUNA for people in China) does not leak into
+# uv.lock. Project-level index config overrides user-level.
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple"
+default = true
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning", "ignore::UserWarning"]
+markers = [
+    "slow: trains a model; deselect with -m 'not slow'",
+    "ontop: needs the Ontop CLI + DuckDB JDBC driver; skipped when absent",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py313"
+# Vendored upstream code keeps its own style; see src/grid2op_vkg/baselines/UPSTREAM.md
+extend-exclude = ["src/grid2op_vkg/baselines"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

@@ -1,0 +1,513 @@
+{
+  "name": "case14_full_test_20260924",
+  "config": "configs/base.yaml",
+  "test_ids": [
+    2,
+    8,
+    12,
+    25,
+    36,
+    46,
+    53,
+    69,
+    74,
+    81,
+    84,
+    100,
+    106,
+    117,
+    126,
+    144,
+    158,
+    162,
+    164,
+    189,
+    201,
+    206,
+    208,
+    209,
+    212,
+    220,
+    222,
+    245,
+    264,
+    269,
+    270,
+    273,
+    274,
+    284,
+    297,
+    299,
+    323,
+    330,
+    363,
+    381,
+    389,
+    406,
+    421,
+    439,
+    446,
+    447,
+    468,
+    475,
+    500,
+    511,
+    513,
+    522,
+    524,
+    538,
+    557,
+    567,
+    572,
+    576,
+    578,
+    579,
+    594,
+    595,
+    596,
+    600,
+    618,
+    627,
+    652,
+    654,
+    665,
+    672,
+    697,
+    718,
+    737,
+    756,
+    765,
+    771,
+    839,
+    846,
+    848,
+    862,
+    867,
+    869,
+    894,
+    902,
+    911,
+    916,
+    924,
+    938,
+    944,
+    949,
+    951,
+    955,
+    960,
+    962,
+    969,
+    977,
+    982,
+    988,
+    996,
+    998
+  ],
+  "purpose": "CPU inference-only expansion, fixed final Raw and VKG-State models; no retraining or checkpoint selection",
+  "protocol": {
+    "seed": 0,
+    "horizon": 8064,
+    "time_limit": 1,
+    "time_limit_enforced": false,
+    "simulate_cap": 40,
+    "workers_total": 26
+  },
+  "artifacts": [
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-cpu/configs/base.yaml",
+      "sha256": "f6ab36f2d3af770f1b9fc7fb3e20c70b8d0ffdc4ce533463909a6db6a912ac3c"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-cpu/configs/chronics_split.json",
+      "sha256": "544ecb904c8141bb2bb9e892e56c65d5e6b8d54ed9ce8c9b80931f09107f86d1"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s0/Raw_s0.zip",
+      "sha256": "c9e6f4735ef6637673953f2015e8991686624855e1d2826116a2b60961b0fb3f"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s0/run_meta.json",
+      "sha256": "c98c3f181bb4e8ccc3d12194c92a5bd8bcd23849f994fef6962fa058cb4123eb"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s0/vkg_arm.json",
+      "sha256": "69698ee054c1d8a6ef675cb989c9755500a4aae07fa2341512c654ecd093c7bb"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s0/obs_attr_to_keep.json",
+      "sha256": "35ee4e02adaf0bcb17633a89f85c0ad875927491719ba6808032c2ff54741fb0"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s0/act_space.json",
+      "sha256": "63d3ff548f2ab5174318fef95702454d093f25f374467d21bec843f75254523b"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s0/.normalize_obs",
+      "sha256": "c33f5d4b4a0d4b86a935ab28c55d5b052fe09aea973cc547b6158314b9fe1120"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s1/Raw_s1.zip",
+      "sha256": "8247152be5da558c00aaabe638b78d57eca051b213b2b5236061c76442c1c106"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s1/run_meta.json",
+      "sha256": "14d9deafc56f86586f8968d880c272c75ef0270d338a1100f501f23620c62516"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s1/vkg_arm.json",
+      "sha256": "a0f71ef068f6f616ef334c1f83e58371a9b8a8532585de60437b82a15439bc28"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s1/obs_attr_to_keep.json",
+      "sha256": "35ee4e02adaf0bcb17633a89f85c0ad875927491719ba6808032c2ff54741fb0"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s1/act_space.json",
+      "sha256": "63d3ff548f2ab5174318fef95702454d093f25f374467d21bec843f75254523b"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s1/.normalize_obs",
+      "sha256": "c33f5d4b4a0d4b86a935ab28c55d5b052fe09aea973cc547b6158314b9fe1120"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s2/Raw_s2.zip",
+      "sha256": "6948a1ce5b8edb3eb5f40c6c3b38bf21359f13afcd25f79b37e8220a3bf9358b"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s2/run_meta.json",
+      "sha256": "82ae419c366a46f388f253ecf669270836a80e89b368bb68cf1056052ec9b466"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s2/vkg_arm.json",
+      "sha256": "e2a52a2ab2ba3f85f4f404667911ea2447d0a0ed1f05c5f7db29a50bac5228c8"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s2/obs_attr_to_keep.json",
+      "sha256": "35ee4e02adaf0bcb17633a89f85c0ad875927491719ba6808032c2ff54741fb0"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s2/act_space.json",
+      "sha256": "63d3ff548f2ab5174318fef95702454d093f25f374467d21bec843f75254523b"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s2/.normalize_obs",
+      "sha256": "c33f5d4b4a0d4b86a935ab28c55d5b052fe09aea973cc547b6158314b9fe1120"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s3/Raw_s3.zip",
+      "sha256": "2013d4d549921fd29d4021593d7a275d05e2976197110f6981f7624504eedf17"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s3/run_meta.json",
+      "sha256": "6f13cacc1388fb165b52b777e30c763d79f99eef714ca3e1e677223867d15e2b"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s3/vkg_arm.json",
+      "sha256": "7a182086c79dae4aa03a3b528dfa946decd0f524d903ceed8fd0ea754ecd4720"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s3/obs_attr_to_keep.json",
+      "sha256": "35ee4e02adaf0bcb17633a89f85c0ad875927491719ba6808032c2ff54741fb0"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s3/act_space.json",
+      "sha256": "63d3ff548f2ab5174318fef95702454d093f25f374467d21bec843f75254523b"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s3/.normalize_obs",
+      "sha256": "c33f5d4b4a0d4b86a935ab28c55d5b052fe09aea973cc547b6158314b9fe1120"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s4/Raw_s4.zip",
+      "sha256": "855b991eb782d8408466b0821bfe575069aa49880989058fe0183312e53f3e53"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s4/run_meta.json",
+      "sha256": "eaec9bcd3847aee303b1dae6e7c447782419d1b45489be96fbec8fea4e2a8b4b"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s4/vkg_arm.json",
+      "sha256": "ecf4abe943688203e4ecec3488bf5523b0252dd8a8531b9ddaeedf788df724f6"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s4/obs_attr_to_keep.json",
+      "sha256": "35ee4e02adaf0bcb17633a89f85c0ad875927491719ba6808032c2ff54741fb0"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s4/act_space.json",
+      "sha256": "63d3ff548f2ab5174318fef95702454d093f25f374467d21bec843f75254523b"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s4/.normalize_obs",
+      "sha256": "c33f5d4b4a0d4b86a935ab28c55d5b052fe09aea973cc547b6158314b9fe1120"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s0/VKG-State_s0.zip",
+      "sha256": "bbee0874e92827b146a58932127d1d2e18ef8cb343a796875c54992af4d3572a"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s0/run_meta.json",
+      "sha256": "0923fdf2302dc94e272d3ab19ab3f0f12c2e64827a47e34cb1e3bd5795006264"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s0/vkg_arm.json",
+      "sha256": "f534f42746e7e0f1a76e4e39fcaea09c80055f10f5e9a722d7ab904d04ce3a28"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s0/obs_attr_to_keep.json",
+      "sha256": "6fb131f02711d360b5199a264c18e4a0b84bd5aa5b7b192cd3606ece5846c4db"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s0/act_space.json",
+      "sha256": "63d3ff548f2ab5174318fef95702454d093f25f374467d21bec843f75254523b"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s0/.normalize_obs",
+      "sha256": "c33f5d4b4a0d4b86a935ab28c55d5b052fe09aea973cc547b6158314b9fe1120"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s1/VKG-State_s1.zip",
+      "sha256": "446380923f1181f98b1eede5224ef0969d5946c59aaeaedef7f001bc5e428e1a"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s1/run_meta.json",
+      "sha256": "7d8eabfd0893d6ecb9d68345983f78b532f3669691432ceeb48755682ba4b28e"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s1/vkg_arm.json",
+      "sha256": "c60c5c39f7646aece00e6b03421049627c8db4b87f03d606cfef341606f24a42"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s1/obs_attr_to_keep.json",
+      "sha256": "6fb131f02711d360b5199a264c18e4a0b84bd5aa5b7b192cd3606ece5846c4db"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s1/act_space.json",
+      "sha256": "63d3ff548f2ab5174318fef95702454d093f25f374467d21bec843f75254523b"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s1/.normalize_obs",
+      "sha256": "c33f5d4b4a0d4b86a935ab28c55d5b052fe09aea973cc547b6158314b9fe1120"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s2/VKG-State_s2.zip",
+      "sha256": "e5888433e7e16704277b3565d04e91a57f336f6c87129032addb6210060875ca"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s2/run_meta.json",
+      "sha256": "b6f12985785c4416ec78f39f46fa6503a56830ffcdd9d34ae469c5a193bd2342"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s2/vkg_arm.json",
+      "sha256": "f2c2818d33ce8fe21fcb4a184947dd0a7cda8d239433bf420b4679487dcac70b"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s2/obs_attr_to_keep.json",
+      "sha256": "6fb131f02711d360b5199a264c18e4a0b84bd5aa5b7b192cd3606ece5846c4db"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s2/act_space.json",
+      "sha256": "63d3ff548f2ab5174318fef95702454d093f25f374467d21bec843f75254523b"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s2/.normalize_obs",
+      "sha256": "c33f5d4b4a0d4b86a935ab28c55d5b052fe09aea973cc547b6158314b9fe1120"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s3/VKG-State_s3.zip",
+      "sha256": "a78e1d11fe767622bfc883c766075417d33d6350c173ce099f5c11e5d7e31c00"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s3/run_meta.json",
+      "sha256": "c59a2d9afaae55a0740a19bcba119c1f23f72ae3b1fe81192135ad2775698218"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s3/vkg_arm.json",
+      "sha256": "606d38249f805f5232022bcf92859078c7f64b34f2960108b56ac76f9b278ce7"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s3/obs_attr_to_keep.json",
+      "sha256": "6fb131f02711d360b5199a264c18e4a0b84bd5aa5b7b192cd3606ece5846c4db"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s3/act_space.json",
+      "sha256": "63d3ff548f2ab5174318fef95702454d093f25f374467d21bec843f75254523b"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s3/.normalize_obs",
+      "sha256": "c33f5d4b4a0d4b86a935ab28c55d5b052fe09aea973cc547b6158314b9fe1120"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s4/VKG-State_s4.zip",
+      "sha256": "a280fd145183ccc495ebca6f835b34104d9537aa418426ccfb5c9d76221b00f1"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s4/run_meta.json",
+      "sha256": "55f071be7f2160118c49a21fd446441d7971522c4e33b250d815af77f632d950"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s4/vkg_arm.json",
+      "sha256": "6a10ba3124060f7df6045fdc0d33e71040855b0318fbd5826846d4fa8f77dec3"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s4/obs_attr_to_keep.json",
+      "sha256": "6fb131f02711d360b5199a264c18e4a0b84bd5aa5b7b192cd3606ece5846c4db"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s4/act_space.json",
+      "sha256": "63d3ff548f2ab5174318fef95702454d093f25f374467d21bec843f75254523b"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s4/.normalize_obs",
+      "sha256": "c33f5d4b4a0d4b86a935ab28c55d5b052fe09aea973cc547b6158314b9fe1120"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-cpu/results/eval_arms/v4n_test/20260921-224551/per_episode.csv",
+      "sha256": "9bc7d12d6b56b64a3e3d828d9e9a3fc66a56fbe22b6953f2a89f2fbb3e8537c6"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-cpu/results/eval_arms/v4n_test_late/20260921-234723/per_episode.csv",
+      "sha256": "93736d5a65d861d7894877700572b5bc5280c58e8ef72d5d6942168524527060"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-cpu/results/eval_arms/v4n_test_late/20260921-225139/per_episode.csv",
+      "sha256": "ae895d2c5b9c4e6ac65cb1bddc8af954db9a137efeb8dcac0350d4b414a3bcb7"
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-cpu/results/eval/20260919-154537/per_episode.csv",
+      "sha256": "5273004d00fb15b0760042b1a20c8f805baeb52edb9b621e7d3def263bd887ce"
+    }
+  ],
+  "references": [
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-cpu/results/eval_arms/v4n_test/20260921-224551/per_episode.csv",
+      "labels": {
+        "Raw:Raw_s0": "Raw:Raw_s0",
+        "Raw:Raw_s1": "Raw:Raw_s1",
+        "Raw:Raw_s2": "Raw:Raw_s2",
+        "Raw:Raw_s3": "Raw:Raw_s3",
+        "Raw:Raw_s4": "Raw:Raw_s4",
+        "VKG-State:VKG-State_s0": "VKG-State:VKG-State_s0",
+        "VKG-State:VKG-State_s2": "VKG-State:VKG-State_s2",
+        "VKG-State:VKG-State_s4": "VKG-State:VKG-State_s4"
+      }
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-cpu/results/eval_arms/v4n_test_late/20260921-234723/per_episode.csv",
+      "labels": {
+        "VKG-State:VKG-State_s1": "VKG-State:VKG-State_s1"
+      }
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-cpu/results/eval_arms/v4n_test_late/20260921-225139/per_episode.csv",
+      "labels": {
+        "VKG-State:VKG-State_s3": "VKG-State:VKG-State_s3"
+      }
+    },
+    {
+      "path": "/mnt/data1/home/limingxuan/grid2op-vkg-cpu/results/eval/20260919-154537/per_episode.csv",
+      "labels": {
+        "DoNothing": "DoNothing",
+        "Reconnect": "Reconnect",
+        "ExpertAgent": "ExpertAgent",
+        "OptimCVXPY": "OptimCVXPY"
+      }
+    }
+  ],
+  "jobs": [
+    {
+      "name": "Raw",
+      "agents": [
+        "Raw:Raw_s0",
+        "Raw:Raw_s1",
+        "Raw:Raw_s2",
+        "Raw:Raw_s3",
+        "Raw:Raw_s4"
+      ],
+      "kwargs": {
+        "Raw:Raw_s0": {
+          "model_dir": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s0"
+        },
+        "Raw:Raw_s1": {
+          "model_dir": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s1"
+        },
+        "Raw:Raw_s2": {
+          "model_dir": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s2"
+        },
+        "Raw:Raw_s3": {
+          "model_dir": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s3"
+        },
+        "Raw:Raw_s4": {
+          "model_dir": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/Raw_s4"
+        }
+      },
+      "workers": 6,
+      "estimated_episode_seconds": 20
+    },
+    {
+      "name": "VKG-State",
+      "agents": [
+        "VKG-State:VKG-State_s0",
+        "VKG-State:VKG-State_s1",
+        "VKG-State:VKG-State_s2",
+        "VKG-State:VKG-State_s3",
+        "VKG-State:VKG-State_s4"
+      ],
+      "kwargs": {
+        "VKG-State:VKG-State_s0": {
+          "model_dir": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s0"
+        },
+        "VKG-State:VKG-State_s1": {
+          "model_dir": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s1"
+        },
+        "VKG-State:VKG-State_s2": {
+          "model_dir": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s2"
+        },
+        "VKG-State:VKG-State_s3": {
+          "model_dir": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s3"
+        },
+        "VKG-State:VKG-State_s4": {
+          "model_dir": "/mnt/data1/home/limingxuan/grid2op-vkg-vkg/checkpoints/arms/v4n/VKG-State_s4"
+        }
+      },
+      "workers": 6,
+      "estimated_episode_seconds": 20
+    },
+    {
+      "name": "DoNothing",
+      "agents": [
+        "DoNothing"
+      ],
+      "kwargs": {},
+      "workers": 1,
+      "estimated_episode_seconds": 4
+    },
+    {
+      "name": "Reconnect",
+      "agents": [
+        "Reconnect"
+      ],
+      "kwargs": {},
+      "workers": 1,
+      "estimated_episode_seconds": 4
+    },
+    {
+      "name": "ExpertAgent",
+      "agents": [
+        "ExpertAgent"
+      ],
+      "kwargs": {},
+      "workers": 4,
+      "estimated_episode_seconds": 20
+    },
+    {
+      "name": "OptimCVXPY",
+      "agents": [
+        "OptimCVXPY"
+      ],
+      "kwargs": {},
+      "workers": 8,
+      "estimated_episode_seconds": 160
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+# Normalize line endings: LF in the repository, native in the working tree.
+* text=auto eol=lf
+
+*.sh text eol=lf
+
+# uv's lockfile is generated; don't let merge tools mangle it.
+uv.lock -diff merge=binary
+
+# Binary / non-diffable assets.
+*.png  binary
+*.jpg  binary
+*.pdf  binary
+*.zip  binary
+*.gz   binary
+*.npy  binary
+*.npz  binary
+*.pkl  binary
+*.h5   binary
+*.pt   binary
+*.pth  binary
+*.ckpt binary
+
+*.ipynb text merge=binary
+
+# Preserve upstream wheel bytes for per-file provenance hashes.
+upstream/** -text

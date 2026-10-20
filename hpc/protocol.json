@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "env": "l2rpn_wcci_2022",
+  "seeds": [
+    0,
+    1
+  ],
+  "cells": [
+    "A",
+    "B",
+    "C",
+    "D"
+  ],
+  "test_episodes_per_model_cell": 100,
+  "teacher": "reuse frozen non-VKG train-derived387-action library; no test adaptation",
+  "tutor": {
+    "do_nothing_threshold": 0.925,
+    "best_action_threshold": 0.999,
+    "train_chronics": "all1507,one full rollout each",
+    "workers": 16,
+    "offline_simulate": "unlimited,counted separately"
+  },
+  "junior": {
+    "epochs": 100,
+    "batch_size": 256,
+    "learning_rate": 0.0005,
+    "hidden": [
+      1000,
+      1000,
+      1000,
+      1000
+    ],
+    "dropout": 0.25
+  },
+  "senior": {
+    "iterations": 50,
+    "train_batch_size": 4000,
+    "sgd_minibatch_size": 128,
+    "num_sgd_iter": 30,
+    "learning_rate": 5e-05,
+    "gamma": 0.99,
+    "framework": "native PyTorch model + RLlib2.5.1 PPO",
+    "num_rollout_workers": 0,
+    "action_threshold": 0.95,
+    "topo": false
+  },
+  "evaluation": {
+    "simulate_budget": 40,
+    "reserve": 10,
+    "draw_seed": "same as training seed",
+    "topo": false,
+    "candidate_pool": "same387train-derived policy actions+no-op; VKG filters within common action universe"
+  }
+}

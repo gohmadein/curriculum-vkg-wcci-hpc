@@ -1,0 +1,185 @@
+@prefix g2o:  <https://grid2op-vkg.org/ontology#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+<https://grid2op-vkg.org/ontology>
+    a owl:Ontology ;
+    rdfs:label "Grid2Op control ontology" ;
+    rdfs:comment """TBox for VKG semantic feedback on Grid2Op power-grid control.
+
+Three layers:
+  structure  substations, busbars, lines, terminals  -- static per grid
+  state      bus assignment, flows, cooldowns        -- one snapshot per step
+  control    candidate actions and their relevance   -- makes masking a query
+
+The unit of both topology and action is the TERMINAL: one entry of grid2op's
+topo_vect, i.e. one attachment point that can be moved between busbars.""" .
+
+# --------------------------------------------------------------------------- #
+# structure layer -- static for a given grid
+# --------------------------------------------------------------------------- #
+
+g2o:Substation a owl:Class ;
+    rdfs:label "Substation" ;
+    rdfs:comment "A site where lines and equipment meet. Actions act here." .
+
+g2o:Busbar a owl:Class ;
+    rdfs:label "Busbar" ;
+    rdfs:comment "One conductor bar inside a substation. Grid2Op grids have n_busbar_per_sub of them (2 in the classic environments)." .
+
+g2o:Bus a owl:Class ;
+    rdfs:label "Electrical node" ;
+    rdfs:comment "An energised busbar: terminals sharing one are electrically the same point. Dynamic -- splitting a substation creates a second Bus out of the same Busbars." .
+
+g2o:PowerLine a owl:Class ;
+    rdfs:label "Power line" ;
+    rdfs:comment "A transmission line joining two substations, with an origin and an extremity end." .
+
+g2o:Terminal a owl:Class ;
+    rdfs:label "Terminal" ;
+    rdfs:comment "One topo_vect entry: the attachment of one element end to one busbar." .
+
+g2o:LineOrigin     a owl:Class ; rdfs:subClassOf g2o:Terminal .
+g2o:LineExtremity  a owl:Class ; rdfs:subClassOf g2o:Terminal .
+g2o:GenTerminal    a owl:Class ; rdfs:subClassOf g2o:Terminal .
+g2o:LoadTerminal   a owl:Class ; rdfs:subClassOf g2o:Terminal .
+g2o:StorageTerminal a owl:Class ; rdfs:subClassOf g2o:Terminal .
+
+g2o:Injection a owl:Class ;
+    rdfs:comment "Anything that pushes or pulls power at a node." .
+g2o:Generator a owl:Class ; rdfs:subClassOf g2o:Injection .
+g2o:Load      a owl:Class ; rdfs:subClassOf g2o:Injection .
+g2o:Storage   a owl:Class ; rdfs:subClassOf g2o:Injection .
+
+g2o:atSubstation a owl:ObjectProperty ;
+    rdfs:domain g2o:Terminal ; rdfs:range g2o:Substation .
+
+g2o:hasTerminal a owl:ObjectProperty ;
+    rdfs:comment "Element -> one of its terminals." .
+g2o:terminalOf a owl:ObjectProperty ;
+    owl:inverseOf g2o:hasTerminal .
+
+g2o:originTerminal    a owl:ObjectProperty ; rdfs:subPropertyOf g2o:hasTerminal ;
+    rdfs:domain g2o:PowerLine ; rdfs:range g2o:LineOrigin .
+g2o:extremityTerminal a owl:ObjectProperty ; rdfs:subPropertyOf g2o:hasTerminal ;
+    rdfs:domain g2o:PowerLine ; rdfs:range g2o:LineExtremity .
+
+g2o:hasBusbar a owl:ObjectProperty ; rdfs:domain g2o:Substation ; rdfs:range g2o:Busbar .
+
+g2o:topoVectIndex a owl:DatatypeProperty ;
+    rdfs:domain g2o:Terminal ; rdfs:range xsd:integer ;
+    rdfs:comment "Position in topo_vect. The bridge between the graph and the action space." .
+g2o:elementIndex a owl:DatatypeProperty ; rdfs:range xsd:integer ;
+    rdfs:comment "The object's grid2op id within its own kind." .
+g2o:busbarNumber a owl:DatatypeProperty ; rdfs:domain g2o:Busbar ; rdfs:range xsd:integer .
+g2o:terminalCount a owl:DatatypeProperty ; rdfs:domain g2o:Substation ; rdfs:range xsd:integer .
+g2o:thermalLimit a owl:DatatypeProperty ; rdfs:domain g2o:PowerLine ; rdfs:range xsd:double .
+
+# --------------------------------------------------------------------------- #
+# state layer -- rewritten every step
+# --------------------------------------------------------------------------- #
+
+g2o:connectedTo a owl:ObjectProperty ;
+    rdfs:domain g2o:Terminal ; rdfs:range g2o:Bus ;
+    rdfs:comment "Absent when the terminal is disconnected (topo_vect == -1)." .
+g2o:busAt a owl:ObjectProperty ; rdfs:domain g2o:Bus ; rdfs:range g2o:Substation .
+g2o:onBusbar a owl:DatatypeProperty ; rdfs:domain g2o:Terminal ; rdfs:range xsd:integer ;
+    rdfs:comment "Local busbar number, 1..n_busbar_per_sub, or -1 for disconnected." .
+
+g2o:rho a owl:DatatypeProperty ; rdfs:domain g2o:PowerLine ; rdfs:range xsd:double ;
+    rdfs:comment "Current over thermal limit. Above 1.0 the line is overloaded." .
+g2o:inService a owl:DatatypeProperty ; rdfs:domain g2o:PowerLine ; rdfs:range xsd:boolean .
+g2o:timestepOverflow a owl:DatatypeProperty ; rdfs:domain g2o:PowerLine ; rdfs:range xsd:integer .
+g2o:cooldown a owl:DatatypeProperty ; rdfs:range xsd:integer ;
+    rdfs:comment "Steps before this line or substation may be acted on again." .
+g2o:isSplit a owl:DatatypeProperty ; rdfs:domain g2o:Substation ; rdfs:range xsd:boolean ;
+    rdfs:comment "True when the substation currently spans more than one Bus." .
+
+g2o:marginUp a owl:DatatypeProperty ; rdfs:domain g2o:Generator ; rdfs:range xsd:double .
+g2o:marginDown a owl:DatatypeProperty ; rdfs:domain g2o:Generator ; rdfs:range xsd:double .
+g2o:actualDispatch a owl:DatatypeProperty ; rdfs:domain g2o:Generator ; rdfs:range xsd:double .
+
+g2o:atStep a owl:DatatypeProperty ; rdfs:range xsd:integer ;
+    rdfs:comment "Environment step the state layer describes." .
+
+# --------------------------------------------------------------------------- #
+# derived layer -- materialised by the reasoning step, not read from the source
+# --------------------------------------------------------------------------- #
+
+g2o:electricallyAdjacent a owl:ObjectProperty, owl:SymmetricProperty ;
+    rdfs:domain g2o:PowerLine ; rdfs:range g2o:PowerLine ;
+    rdfs:comment """Two in-service lines with an end on the same Bus. This is the
+adjacency flow actually transfers over, and unlike substation adjacency it changes
+when a substation splits -- precisely the structure a flat observation vector hides.""" .
+
+g2o:sharesSubstationWith a owl:ObjectProperty, owl:SymmetricProperty ;
+    rdfs:domain g2o:PowerLine ; rdfs:range g2o:PowerLine ;
+    rdfs:comment "Two lines with an end at the same substation, whatever its configuration. Static; the topographic counterpart of electricallyAdjacent." .
+
+g2o:atRisk a owl:DatatypeProperty ; rdfs:domain g2o:PowerLine ; rdfs:range xsd:boolean .
+g2o:isBridge a owl:DatatypeProperty ; rdfs:domain g2o:PowerLine ; rdfs:range xsd:boolean ;
+    rdfs:comment "Removing it disconnects the energised graph. Produced by a graph-analysis reasoning service, not by SPARQL." .
+
+# --------------------------------------------------------------------------- #
+# control layer -- candidate actions live in the graph, so masking is a query
+# --------------------------------------------------------------------------- #
+
+g2o:CandidateAction a owl:Class ;
+    rdfs:comment "One member of the fixed candidate action set the agent chooses from. Every arm of the ablation sees the same set." .
+g2o:TopologyAction a owl:Class ; rdfs:subClassOf g2o:CandidateAction ;
+    rdfs:comment "Assign every terminal of one substation to a busbar." .
+g2o:LineStatusAction a owl:Class ; rdfs:subClassOf g2o:CandidateAction ;
+    rdfs:comment "Connect or disconnect one power line." .
+g2o:DoNothingAction a owl:Class ; rdfs:subClassOf g2o:CandidateAction ;
+    rdfs:comment "The empty action. Always legal, always relevant: a mask must leave the agent at least one choice." .
+g2o:setsLineStatus a owl:DatatypeProperty ; rdfs:domain g2o:LineStatusAction ; rdfs:range xsd:integer ;
+    rdfs:comment "+1 reconnect, -1 disconnect." .
+g2o:BusAssignment a owl:Class ;
+    rdfs:comment "Reified 'put this terminal on that busbar' pair of a TopologyAction." .
+
+g2o:actionIndex a owl:DatatypeProperty ; rdfs:domain g2o:CandidateAction ; rdfs:range xsd:integer ;
+    rdfs:comment "Index into the fixed candidate set == position in the mask vector." .
+g2o:actsOn a owl:ObjectProperty ; rdfs:domain g2o:CandidateAction ;
+    rdfs:comment "The Substation or PowerLine the action touches." .
+g2o:assigns a owl:ObjectProperty ; rdfs:domain g2o:TopologyAction ; rdfs:range g2o:BusAssignment .
+g2o:assignsTerminal a owl:ObjectProperty ; rdfs:domain g2o:BusAssignment ; rdfs:range g2o:Terminal .
+g2o:assignsBusbar a owl:DatatypeProperty ; rdfs:domain g2o:BusAssignment ; rdfs:range xsd:integer .
+g2o:actionCost a owl:DatatypeProperty ; rdfs:domain g2o:CandidateAction ; rdfs:range xsd:double ;
+    rdfs:comment "Monetary cost. Topology switching is free; redispatch and curtailment are not." .
+
+g2o:isLegalNow a owl:DatatypeProperty ; rdfs:domain g2o:CandidateAction ; rdfs:range xsd:boolean ;
+    rdfs:comment "Allowed by the game rules right now: cooldowns, MAX_SUB_CHANGED, reconnection rules." .
+g2o:isRelevantTo a owl:ObjectProperty ; rdfs:domain g2o:CandidateAction ; rdfs:range g2o:PowerLine ;
+    rdfs:comment "Semantic relevance: the action can plausibly affect that line's loading." .
+
+# --------------------------------------------------------------------------- #
+# provenance and time -- declared now, populated only for the degraded-observation
+# and schema-shift experiments (roadmap step 7)
+# --------------------------------------------------------------------------- #
+
+g2o:Reading a owl:Class ;
+    rdfs:comment "Reified measurement, so a value can carry its source, age and confidence." .
+g2o:ofProperty    a owl:ObjectProperty ; rdfs:domain g2o:Reading .
+g2o:value         a owl:DatatypeProperty ; rdfs:domain g2o:Reading .
+g2o:observedAtStep a owl:DatatypeProperty ; rdfs:domain g2o:Reading ; rdfs:range xsd:integer .
+g2o:confidence    a owl:DatatypeProperty ; rdfs:domain g2o:Reading ; rdfs:range xsd:double .
+g2o:derivedFrom   a owl:ObjectProperty ; rdfs:subPropertyOf prov:wasDerivedFrom ; rdfs:domain g2o:Reading .
+
+# --------------------------------------------------------------------------- #
+# remedial-action catalogue -- static electrical knowledge, compiled offline
+# (grid2op_vkg.vkg.remedial): what each candidate action does to each line's
+# loading in the reference topology. The relevance query joins it with the
+# live state: relevant(a) <- atRisk(l) AND relieves(a, l, >= theta).
+# --------------------------------------------------------------------------- #
+
+g2o:RemedialEffect a owl:Class ;
+    rdfs:comment "Reified catalogued effect of one CandidateAction on one PowerLine: effect = rho(do nothing) - rho(action), mean over the compilation snapshots, reference topology. Positive lowers that line's loading, negative raises it; joined with the live rho it predicts the post-action loading profile." .
+g2o:ofAction a owl:ObjectProperty ; rdfs:domain g2o:RemedialEffect ; rdfs:range g2o:CandidateAction .
+g2o:onLine a owl:ObjectProperty ; rdfs:domain g2o:RemedialEffect ; rdfs:range g2o:PowerLine .
+g2o:effect a owl:DatatypeProperty ; rdfs:domain g2o:RemedialEffect ; rdfs:range xsd:double ;
+    rdfs:comment "Mean signed change of the line's loading caused by the action, in units of rho (1.0 = the thermal limit); positive = relief." .
+g2o:signStability a owl:DatatypeProperty ; rdfs:domain g2o:RemedialEffect ; rdfs:range xsd:double ;
+    rdfs:comment "Fraction of compilation snapshots in which the relief was positive." .
