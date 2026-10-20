@@ -18,3 +18,5 @@ e679b1cc7c5114de962189d2dceb0603a116108ec89c5bbcadea2b70184de6ce。
 - A/B/C/D均由同一公共eval_baselines.py评估；旧case14权重不用于118。
 
 预算与模型共享方式属于本次预定适配协议，不以测试分数选择。详细冻结值在hpc/protocol.json。
+
+- Senior训练环境也使用部署端现有StepSimulator：每个真实物理步缓存重复试算并限制40次，预算耗尽时返回无效候选，避免原生重连辅助重复调用使环境抛限额异常。Tutor离线扫描不使用该代理。

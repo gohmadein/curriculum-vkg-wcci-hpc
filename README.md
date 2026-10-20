@@ -21,7 +21,7 @@
 4. **Senior重新训练**：原生Torch actor/value模型、原生Senior动作执行/安全代打/奖励折叠方法，通过原生RLlib2.5.1 PPO训练；50iterations，batch4000、minibatch128、30轮SGD、lr5e-5、gamma0.99。约200k高层采样步，精确数量以RLlib记录为准。
 5. 导出最后一轮policy.npz，使用训练状态核对Torch与NumPy输出误差，再用公共eval_baselines.py完成四格评估。
 
-Senior保留上游softmax输出及终止/截断惯例，不静默修改为其他算法。部署topo=False与现有case14部署行一致；不使用额外观察归一化。原生PPO_Reward作为训练附加奖励，冻结Redisp/L2RPN与物理参数不改。
+Senior保留上游softmax输出及终止/截断惯例，不静默修改为其他算法。训练时的重连试算也复用部署端缓存/40次预算代理，耗尽后候选视为无效。部署topo=False与现有case14部署行一致；不使用额外观察归一化。原生PPO_Reward作为训练附加奖励，冻结Redisp/L2RPN与物理参数不改。
 
 **118节点VKG只筛选基线同一份387动作库，不扩充动作集合。** 候选库加入空动作仅供schema表示，策略仍为387类。原生重连/复合动作分支保留，TR仅改写候选中断线端子；A中已有上游机制不人为移除。没有新增随机候选R对照，不能将所有接入差异一概解释为纯知识推理贡献。
 
