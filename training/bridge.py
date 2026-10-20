@@ -24,7 +24,7 @@ class BridgeEnv(gym.Env):
  def ask(self,msg):
   self.process.stdin.write(json.dumps(msg)+'\n');self.process.stdin.flush();return self.receive()
  def reset(self,*,seed=None,options=None):
-  super().reset(seed=seed);r=self.ask(dict(op='reset',seed=seed));return np.asarray(r['obs'],np.float32),r['info']
+  super().reset(seed=seed);r=self.ask(dict(op='reset',seed=None if seed is None else int(seed)));return np.asarray(r['obs'],np.float32),r['info']
  def step(self,action):
   r=self.ask(dict(op='step',action=int(action)))
   return np.asarray(r['obs'],np.float32),r['reward'],r['terminated'],r['truncated'],r['info']
